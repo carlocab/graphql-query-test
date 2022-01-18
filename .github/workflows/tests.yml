@@ -18,7 +18,7 @@ jobs:
             https://api.github.com/graphql
 
       - name: Query GraphQL API with JavaScript
-        uses: actions/github-script@v3
+        uses: actions/github-script@v5
         with:
           github-token: ${{ github.token }}
           script: |
