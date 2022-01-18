@@ -1,0 +1,48 @@
+name: CI
+
+on: "workflow_dispatch"
+
+jobs:
+  test_graphql_query:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show GraphQL Query Response Headers
+        run: |
+          QUERY='query{ repository(owner:\"Homebrew\", name:\"homebrew-core\") { pullRequests(last: 100, states: OPEN, labels: [\"CI-long-timeout\"]) { totalCount } } }'
+          curl \
+            --include \
+            --header 'Content-Type: application/json' \
+            --header 'Authorization: Bearer ${{ github.token }}' \
+            --request POST \
+            --data "{ \"query\": \"$QUERY\" }" \
+            https://api.github.com/graphql
+
+      - name: Query GraphQL API with JavaScript
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const labelCountQuery = `query($owner:String!, $name:String!, $label:String!) {
+              repository(owner:$owner, name:$name) {
+                pullRequests(last: 100, states: OPEN, labels: [$label]) {
+                  totalCount
+                }
+              }
+            }`;
+            var long_pr_count;
+            try {
+              const response = await github.graphql(
+                labelCountQuery, {
+                  owner: 'Homebrew',
+                  name: 'homebrew-core',
+                  label: 'CI-long-timeout'
+                }
+              )
+              long_pr_count = response.data.repository.pullRequests.totalCount
+              core.notice('GraphQL query succeeded.')
+              core.notice(`${long_pr_count} long PRs in Homebrew/core`)
+            } catch (error) {
+              // The GitHub API query errored, so fail open and assume 0 long PRs.
+              long_pr_count = 0
+              core.warning('CI-long-timeout label count query failed. Assuming no long PRs.')
+            }
