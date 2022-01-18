@@ -1,6 +1,10 @@
 name: CI
 
-on: "workflow_dispatch"
+on:
+  workflow_dispatch:
+  schedule:
+    # Every 10 minutes.
+    - cron: "*/10 * * * *"
 
 jobs:
   test_graphql_query:
@@ -44,5 +48,5 @@ jobs:
             } catch (error) {
               // The GitHub API query errored, so fail open and assume 0 long PRs.
               long_pr_count = 0
-              core.warning('CI-long-timeout label count query failed. Assuming no long PRs.')
+              core.setFailed('CI-long-timeout label count query failed.')
             }
