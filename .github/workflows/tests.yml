@@ -48,5 +48,6 @@ jobs:
             } catch (error) {
               // The GitHub API query errored, so fail open and assume 0 long PRs.
               long_pr_count = 0
+              console.error('CI-long-timeout label count query error:', error)
               core.setFailed('CI-long-timeout label count query failed.')
             }
