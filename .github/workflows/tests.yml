@@ -48,7 +48,7 @@ jobs:
                   label: 'CI-long-timeout'
                 }
               )
-              long_pr_count = response.data.repository.pullRequests.totalCount
+              long_pr_count = response.repository.pullRequests.totalCount
               core.notice('GraphQL query succeeded.')
               core.notice(`${long_pr_count} long PRs in Homebrew/core`)
             } catch (error) {
