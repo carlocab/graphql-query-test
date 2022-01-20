@@ -26,8 +26,8 @@ jobs:
         with:
           github-token: ${{ github.token }}
           script: |
-            const labelCountQuery = `query($owner: String!, $name: String!, $label: String!) {
-              repository(owner: $owner, name: $name) {
+            const labelCountQuery = `query($owner:String!, $name:String!, $label:String!) {
+              repository(owner:$owner, name:$name) {
                 pullRequests(last: 100, states: OPEN, labels: [$label]) {
                   totalCount
                 }
