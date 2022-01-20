@@ -24,6 +24,9 @@ jobs:
             --data "{ \"query\": \"$QUERY\" }" \
             https://api.github.com/graphql
 
+          REPO_NAME=$(echo ${{ github.repository }} | cut -f 2 -d '/')
+          echo $REPO_NAME
+
       - name: Query GraphQL API with JavaScript
         uses: actions/github-script@v5
         with:
